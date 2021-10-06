@@ -60,31 +60,31 @@ configurations {
 }
 
 dependencies {
-    compile gradleApi()
+    implementation gradleApi()
 
     // moved to the beginning to be the overrider
-    compile 'org.ow2.asm:asm-debug-all:5.0.3'
-    compile 'com.google.guava:guava:18.0'
+    implementation 'org.ow2.asm:asm-debug-all:5.0.3'
+    implementation 'com.google.guava:guava:18.0'
 
-    compile 'net.sf.opencsv:opencsv:2.3' // reading CSVs.. also used by SpecialSource
-    compile 'com.cloudbees:diff4j:1.1' // for difing and patching
-    compile 'com.github.abrarsyed.jastyle:jAstyle:1.2' // formatting
-    compile 'com.github.JetBrains:intellij-deps-trove4j:c08db9d' //JETBRAINS/Ubuntu/Jenkins fix
-    compile 'com.github.jponge:lzma-java:1.3' // replaces the LZMA binary
-    compile 'com.nothome:javaxdelta:2.0.1' // GDIFF implementation for BinPatches
-    compile 'com.google.code.gson:gson:2.2.4' // Used instead of Argo for buuilding changelog.
-    compile 'com.github.tony19:named-regexp:0.2.3' // 1.7 Named regexp features
+    implementation 'net.sf.opencsv:opencsv:2.3' // reading CSVs.. also used by SpecialSource
+    implementation 'com.cloudbees:diff4j:1.1' // for difing and patching
+    implementation 'com.github.abrarsyed.jastyle:jAstyle:1.2' // formatting
+    implementation 'com.github.JetBrains:intellij-deps-trove4j:c08db9d' //JETBRAINS/Ubuntu/Jenkins fix
+    implementation 'com.github.jponge:lzma-java:1.3' // replaces the LZMA binary
+    implementation 'com.nothome:javaxdelta:2.0.1' // GDIFF implementation for BinPatches
+    implementation 'com.google.code.gson:gson:2.2.4' // Used instead of Argo for buuilding changelog.
+    implementation 'com.github.tony19:named-regexp:0.2.3' // 1.7 Named regexp features
 
-    compile 'net.md-5:SpecialSource:1.7.3' // deobf and reobs
+    implementation 'net.md-5:SpecialSource:1.7.3' // deobf and reobs
 
     // because curse
-    compile 'org.apache.httpcomponents:httpclient:4.3.3'
-    compile 'org.apache.httpcomponents:httpmime:4.3.3'
+    implementation 'org.apache.httpcomponents:httpclient:4.3.3'
+    implementation 'org.apache.httpcomponents:httpmime:4.3.3'
 
     // mcp stuff
-    compile 'de.oceanlabs.mcp:RetroGuard:3.6.6'
-    compile 'de.oceanlabs.mcp:mcinjector:3.2-SNAPSHOT'
-    compile 'com.github.basdxz:Srg2Source:7f8c99f732'
+    implementation 'de.oceanlabs.mcp:RetroGuard:3.6.6'
+    implementation 'de.oceanlabs.mcp:mcinjector:3.2-SNAPSHOT'
+    implementation 'com.github.basdxz:Srg2Source:7f8c99f732'
 
     // stupid maven
     deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
@@ -93,7 +93,7 @@ dependencies {
     compileOnly 'com.mojang:authlib:1.5.16'
     compileOnly "net.minecraft:launchwrapper:1.11"
 
-    testCompile 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.+'
 }
 
 compileJava {

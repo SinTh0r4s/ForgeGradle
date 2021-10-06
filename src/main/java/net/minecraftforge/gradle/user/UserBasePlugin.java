@@ -56,7 +56,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
     @Override
     public void applyPlugin() {
         this.applyExternalPlugin("java");
-        this.applyExternalPlugin("maven");
+        this.applyExternalPlugin("maven-publish");
         this.applyExternalPlugin("eclipse");
         this.applyExternalPlugin("idea");
 
