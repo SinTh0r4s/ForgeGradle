@@ -324,11 +324,11 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         project.getDependencies().add(CONFIG_START, project.files(delayedFile(getStartDir())));
 
         // extra libs folder.
-        project.getDependencies().add("compile", project.fileTree("libs"));
+        project.getDependencies().add("implementation", project.fileTree("libs"));
 
         // make MC dependencies into normal compile classpath
-        project.getDependencies().add("compile", project.getConfigurations().getByName(CONFIG_DEPS));
-        project.getDependencies().add("compile", project.getConfigurations().getByName(CONFIG_MC));
+        project.getDependencies().add("implementation", project.getConfigurations().getByName(CONFIG_DEPS));
+        project.getDependencies().add("implementation", project.getConfigurations().getByName(CONFIG_MC));
         project.getDependencies().add("runtime", project.getConfigurations().getByName(CONFIG_START));
     }
 
@@ -350,7 +350,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         main.setCompileClasspath(main.getCompileClasspath().plus(api.getOutput()));
         test.setCompileClasspath(test.getCompileClasspath().plus(api.getOutput()));
 
-        project.getConfigurations().getByName("apiCompile").extendsFrom(project.getConfigurations().getByName("compile"));
+        project.getConfigurations().getByName("apiCompile").extendsFrom(project.getConfigurations().getByName("implementation"));
         project.getConfigurations().getByName("testCompile").extendsFrom(project.getConfigurations().getByName("apiCompile"));
 
         // set compile not to take from libs
