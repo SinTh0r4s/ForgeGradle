@@ -1,6 +1,17 @@
 package net.minecraftforge.gradle.tasks.dev;
 
 import com.google.common.io.Files;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import net.md_5.specialsource.Jar;
 import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.JarRemapper;
@@ -14,16 +25,7 @@ import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.tasks.TaskAction;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class ObfuscateTask extends DefaultTask {
     private DelayedFile outJar;
@@ -47,8 +49,8 @@ public class ObfuscateTask extends DefaultTask {
                 act.execute(childProj);
         }
 
-        AbstractTask compileTask = (AbstractTask) childProj.getTasks().getByName("compileJava");
-        AbstractTask jarTask = (AbstractTask) childProj.getTasks().getByName(subTask);
+        DefaultTask compileTask = (DefaultTask) childProj.getTasks().getByName("compileJava");
+        DefaultTask jarTask = (DefaultTask) childProj.getTasks().getByName(subTask);
 
         // executing jar task
         getLogger().debug("Executing child " + subTask + " task...");
@@ -87,14 +89,15 @@ public class ObfuscateTask extends DefaultTask {
         obfuscate(inJar, (FileCollection) compileTask.property("classpath"), srg);
     }
 
-    private void executeTask(AbstractTask task) {
+    private void executeTask(DefaultTask task) {
         for (Object dep : task.getTaskDependencies().getDependencies(task)) {
-            executeTask((AbstractTask) dep);
+            executeTask((DefaultTask) dep);
         }
 
         if (!task.getState().getExecuted()) {
             getLogger().lifecycle(task.getPath());
-            task.execute();
+            // TODO: how to actually do it?
+            task.getTaskActions().forEach(action -> action.execute(task));
         }
     }
 

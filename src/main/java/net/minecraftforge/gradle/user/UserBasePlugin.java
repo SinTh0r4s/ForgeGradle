@@ -16,6 +16,7 @@ import net.minecraftforge.gradle.tasks.abstractutil.ExtractTask;
 import net.minecraftforge.gradle.tasks.user.SourceCopyTask;
 import net.minecraftforge.gradle.tasks.user.reobf.ArtifactSpec;
 import net.minecraftforge.gradle.tasks.user.reobf.ReobfTask;
+import org.apache.tools.ant.taskdefs.optional.javah.Kaffeh;
 import org.gradle.api.*;
 import org.gradle.api.artifacts.Configuration.State;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
@@ -24,6 +25,7 @@ import org.gradle.api.internal.ConventionTask;
 import org.gradle.api.internal.plugins.DslObject;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.internal.DefaultJavaPluginExtension;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.*;
 import org.gradle.api.tasks.bundling.Jar;
@@ -31,6 +33,7 @@ import org.gradle.api.tasks.bundling.Zip;
 import org.gradle.api.tasks.compile.GroovyCompile;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.scala.ScalaCompile;
+import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.gradle.plugins.ide.idea.model.IdeaModel;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -329,7 +332,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         // make MC dependencies into normal compile classpath
         project.getDependencies().add("implementation", project.getConfigurations().getByName(CONFIG_DEPS));
         project.getDependencies().add("implementation", project.getConfigurations().getByName(CONFIG_MC));
-        project.getDependencies().add("runtime", project.getConfigurations().getByName(CONFIG_START));
+        project.getDependencies().add("runtimeOnly", project.getConfigurations().getByName(CONFIG_START));
     }
 
     /**
@@ -344,14 +347,14 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         SourceSet api = javaConv.getSourceSets().create("api");
 
         // set the Source
-        javaConv.setSourceCompatibility(JavaVersion.VERSION_1_8);
-        javaConv.setTargetCompatibility(JavaVersion.VERSION_1_8);
+        final DefaultJavaPluginExtension java = (DefaultJavaPluginExtension) project.getPlugins().getPlugin("java");
+        java.toolchain(spec -> spec.getLanguageVersion().set(JavaLanguageVersion.of(8)));
 
         main.setCompileClasspath(main.getCompileClasspath().plus(api.getOutput()));
         test.setCompileClasspath(test.getCompileClasspath().plus(api.getOutput()));
 
-        project.getConfigurations().getByName("apiCompile").extendsFrom(project.getConfigurations().getByName("implementation"));
-        project.getConfigurations().getByName("testCompile").extendsFrom(project.getConfigurations().getByName("apiCompile"));
+//        project.getConfigurations().getByName("apiCompile").extendsFrom(project.getConfigurations().getByName("implementation"));
+//        project.getConfigurations().getByName("testCompile").extendsFrom(project.getConfigurations().getByName("implementation"));
 
         // set compile not to take from libs
         File dirRoot_main = new File(project.getBuildDir(), "sources/"+main.getName());
@@ -1072,28 +1075,28 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
 
         JavaExec exec = (JavaExec) project.getTasks().getByName("runClient");
         {
-            exec.classpath(project.getConfigurations().getByName("runtime"));
+            exec.classpath(project.getConfigurations().getByName("runtimeOnly"));
             exec.classpath(jarTask.getArchivePath());
             exec.dependsOn(jarTask);
         }
 
         exec = (JavaExec) project.getTasks().getByName("runServer");
         {
-            exec.classpath(project.getConfigurations().getByName("runtime"));
+            exec.classpath(project.getConfigurations().getByName("runtimeOnly"));
             exec.classpath(jarTask.getArchivePath());
             exec.dependsOn(jarTask);
         }
 
         exec = (JavaExec) project.getTasks().getByName("debugClient");
         {
-            exec.classpath(project.getConfigurations().getByName("runtime"));
+            exec.classpath(project.getConfigurations().getByName("runtimeOnly"));
             exec.classpath(jarTask.getArchivePath());
             exec.dependsOn(jarTask);
         }
 
         exec = (JavaExec) project.getTasks().getByName("debugServer");
         {
-            exec.classpath(project.getConfigurations().getByName("runtime"));
+            exec.classpath(project.getConfigurations().getByName("runtimeOnly"));
             exec.classpath(jarTask.getArchivePath());
             exec.dependsOn(jarTask);
         }

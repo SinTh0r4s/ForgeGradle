@@ -23,9 +23,11 @@ import org.gradle.api.UncheckedIOException;
 import org.gradle.api.file.FileVisitDetails;
 import org.gradle.api.file.FileVisitor;
 import org.gradle.api.file.RelativePath;
+import org.gradle.api.internal.file.FileCollectionStructureVisitor;
 import org.gradle.api.internal.file.FileSystemSubset.Builder;
+import org.gradle.api.internal.file.FileTreeInternal;
 import org.gradle.api.internal.file.collections.MinimalFileTree;
-import org.gradle.util.DeprecationLogger;
+import org.gradle.internal.deprecation.DeprecationLogger;
 import org.gradle.util.GFileUtils;
 
 import java.io.*;
@@ -48,9 +50,17 @@ public class ZipFileTree implements MinimalFileTree {
         return String.format("ZIP '%s'", zipFile);
     }
 
+
+    @Override
+    public void visitStructure(FileCollectionStructureVisitor fileCollectionStructureVisitor, FileTreeInternal fileTreeInternal) {
+        // TODO: do we need to implement this?
+        System.err.println("ZipFileTree::visitStructure is definitely getting called");
+    }
+
+    @Override
     public void visit(FileVisitor visitor) {
         if (!zipFile.exists()) {
-            DeprecationLogger.nagUserOfDeprecatedBehaviour(
+            DeprecationLogger.deprecateBehaviour(
                     String.format("The specified zip file %s does not exist and will be silently ignored", getDisplayName())
             );
             return;
@@ -87,11 +97,6 @@ public class ZipFileTree implements MinimalFileTree {
         } catch (Exception e) {
             throw new GradleException(String.format("Could not expand %s.", getDisplayName()), e);
         }
-    }
-
-    @Override
-    public void visitTreeOrBackingFile(FileVisitor fileVisitor) {
-        visit(fileVisitor);
     }
 
     private class DetailsImpl implements FileVisitDetails {
@@ -211,10 +216,5 @@ public class ZipFileTree implements MinimalFileTree {
         public int getMode() {
             return ((isDirectory()) ? 493 : 420);
         }
-    }
-
-    @Override
-    public void registerWatchPoints(Builder arg0) {
-        // uh.. nothing..
     }
 }

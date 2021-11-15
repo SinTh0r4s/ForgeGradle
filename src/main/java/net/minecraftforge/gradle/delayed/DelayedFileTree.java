@@ -4,6 +4,8 @@ import net.minecraftforge.gradle.ZipFileTree;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.internal.file.collections.FileTreeAdapter;
+import org.gradle.api.tasks.util.PatternSet;
+import org.gradle.api.tasks.util.internal.PatternSpecFactory;
 
 @SuppressWarnings("serial")
 public class DelayedFileTree extends DelayedBase<FileTree> {
@@ -31,10 +33,18 @@ public class DelayedFileTree extends DelayedBase<FileTree> {
 
     @Override
     public FileTree resolveDelayed() {
-        if (zipTree)
+        if (zipTree) {
             //resolved = project.zipTree(DelayedString.resolve(pattern, project, resolvers));
-            return new FileTreeAdapter(new ZipFileTree(project.file(DelayedBase.resolve(pattern, project, resolvers))));
+            return new FileTreeAdapter(new ZipFileTree(project.file(DelayedBase.resolve(pattern, project, resolvers))), this::patternSetFactory);
+        }
         else
             return project.fileTree(DelayedBase.resolve(pattern, project, resolvers));
+    }
+
+    // TODO: is this done right?
+    private PatternSet patternSetFactory() {
+        PatternSet set = new PatternSet();
+        set.include(pattern);
+        return set;
     }
 }
