@@ -24,7 +24,9 @@ import org.gradle.api.execution.TaskExecutionGraph;
 import org.gradle.api.internal.ConventionTask;
 import org.gradle.api.internal.plugins.DslObject;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.plugins.internal.DefaultJavaPluginExtension;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.*;
@@ -347,7 +349,8 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         SourceSet api = javaConv.getSourceSets().create("api");
 
         // set the Source
-        final DefaultJavaPluginExtension java = (DefaultJavaPluginExtension) project.getPlugins().getPlugin("java");
+        final JavaPluginExtension java = (JavaPluginExtension) project.getExtensions().getByName("java");
+        
         java.toolchain(spec -> spec.getLanguageVersion().set(JavaLanguageVersion.of(8)));
 
         main.setCompileClasspath(main.getCompileClasspath().plus(api.getOutput()));
